@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, User, ArrowRight } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export const Signup = () => {
     const navigate = useNavigate();
+    const { signup, error } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [localError, setLocalError] = useState('');
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -12,11 +16,36 @@ export const Signup = () => {
         confirmPassword: ''
     });
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle signup logic here
-        console.log('Signup submitted:', formData);
-        navigate('/dashboard');
+        setLocalError('');
+
+        // Validate passwords match
+        if (formData.password !== formData.confirmPassword) {
+            setLocalError('Passwords do not match');
+            return;
+        }
+
+        // Validate password length
+        if (formData.password.length < 6) {
+            setLocalError('Password must be at least 6 characters');
+            return;
+        }
+
+        setLoading(true);
+
+        const result = await signup({
+            name: formData.fullName,
+            email: formData.email,
+            password: formData.password
+        });
+
+        setLoading(false);
+        if (result.success) {
+            navigate('/dashboard');
+        } else {
+            setLocalError(result.error || 'Signup failed. Please try again.');
+        }
     };
 
     const handleChange = (e) => {
@@ -78,6 +107,12 @@ export const Signup = () => {
                         </div>
 
                         <form onSubmit={handleSubmit} className="auth-form">
+                            {(localError || error) && (
+                                <div style={{ padding: '12px', background: 'rgba(255, 0, 0, 0.1)', border: '1px solid rgba(255, 0, 0, 0.3)', borderRadius: '8px', color: '#ff5555', marginBottom: '16px', fontSize: '14px' }}>
+                                    {localError || error}
+                                </div>
+                            )}
+
                             <div className="form-group">
                                 <label htmlFor="fullName" className="form-label">Full Name</label>
                                 <div className="input-wrapper">
@@ -158,9 +193,9 @@ export const Signup = () => {
                                 <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
                             </label>
 
-                            <button type="submit" className="btn-primary auth-submit">
-                                <span>Create Account</span>
-                                <ArrowRight size={20} />
+                            <button type="submit" className="btn-primary auth-submit" disabled={loading}>
+                                <span>{loading ? 'Creating Account...' : 'Create Account'}</span>
+                                {!loading && <ArrowRight size={20} />}
                             </button>
 
                             <div className="auth-divider">

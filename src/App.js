@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
+import { AuthProvider } from "./context/AuthContext";
 import { Navbar } from "./components/Navbar";
 import { Landing } from "./components/Landing";
 import { Login } from "./pages/Login";
@@ -17,30 +18,32 @@ import { Footer } from "./components/Footer";
 
 function App() {
   return (
-    <Router>
-      <div className="App dark-theme">
-        <div className="bg-orb orb-1"></div>
-        <div className="bg-orb orb-2"></div>
-        <CustomCursor />
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<><Landing /><Footer /></>} />
-          <Route path="/login" element={<><Login /><Footer /></>} />
-          <Route path="/signup" element={<><Signup /><Footer /></>} />
+    <AuthProvider>
+      <Router>
+        <div className="App dark-theme">
+          <div className="bg-orb orb-1"></div>
+          <div className="bg-orb orb-2"></div>
+          <CustomCursor />
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<><Landing /><Footer /></>} />
+            <Route path="/login" element={<><Login /><Footer /></>} />
+            <Route path="/signup" element={<><Signup /><Footer /></>} />
 
-          <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<Opportunities />} />
-            <Route path="feed" element={<Feed />} />
-            <Route path="network" element={<Network />} />
-            <Route path="opportunities" element={<Opportunities />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="messages" element={<ChatScreen />} />
-            <Route path="chat/:userId" element={<ChatScreen />} />
-            <Route path="chat" element={<ChatScreen />} />
-          </Route>
-        </Routes>
-      </div>
-    </Router>
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route index element={<Opportunities />} />
+              <Route path="feed" element={<Feed />} />
+              <Route path="network" element={<Network />} />
+              <Route path="opportunities" element={<Opportunities />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="messages" element={<ChatScreen />} />
+              <Route path="chat/:userId" element={<ChatScreen />} />
+              <Route path="chat" element={<ChatScreen />} />
+            </Route>
+          </Routes>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 

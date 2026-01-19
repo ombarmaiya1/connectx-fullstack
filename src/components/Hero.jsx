@@ -24,11 +24,11 @@ export const Hero = () => {
           </p>
 
           <div className="hero-ctas">
-            <Link to="/dashboard" className="btn-primary hero-primary-btn">
+            <Link to="/login" className="btn-primary hero-primary-btn">
               <span>Match X</span>
               <ArrowRight size={20} />
             </Link>
-            <Link to="/dashboard/feed" className="btn-secondary">
+            <Link to="/login" className="btn-secondary">
               Explore Feed
             </Link>
           </div>

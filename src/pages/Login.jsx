@@ -1,20 +1,32 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export const Login = () => {
     const navigate = useNavigate();
+    const { login, error } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [localError, setLocalError] = useState('');
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle login logic here
-        console.log('Login submitted:', formData);
-        navigate('/dashboard');
+        setLocalError('');
+        setLoading(true);
+
+        const result = await login(formData);
+
+        setLoading(false);
+        if (result.success) {
+            navigate('/dashboard');
+        } else {
+            setLocalError(result.error || 'Login failed. Please try again.');
+        }
     };
 
     const handleChange = (e) => {
@@ -76,6 +88,12 @@ export const Login = () => {
                         </div>
 
                         <form onSubmit={handleSubmit} className="auth-form">
+                            {(localError || error) && (
+                                <div style={{ padding: '12px', background: 'rgba(255, 0, 0, 0.1)', border: '1px solid rgba(255, 0, 0, 0.3)', borderRadius: '8px', color: '#ff5555', marginBottom: '16px', fontSize: '14px' }}>
+                                    {localError || error}
+                                </div>
+                            )}
+
                             <div className="form-group">
                                 <label htmlFor="email" className="form-label">Email Address</label>
                                 <div className="input-wrapper">
@@ -125,9 +143,9 @@ export const Login = () => {
                                 <a href="#" className="forgot-link">Forgot password?</a>
                             </div>
 
-                            <button type="submit" className="btn-primary auth-submit">
-                                <span>Log In</span>
-                                <ArrowRight size={20} />
+                            <button type="submit" className="btn-primary auth-submit" disabled={loading}>
+                                <span>{loading ? 'Logging in...' : 'Log In'}</span>
+                                {!loading && <ArrowRight size={20} />}
                             </button>
 
                             <div className="auth-divider">

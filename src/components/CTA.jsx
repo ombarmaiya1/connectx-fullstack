@@ -13,7 +13,7 @@ export const CTA = () => {
         <p className="cta-subtitle">
           Join thousands of professionals and students already making meaningful connections
         </p>
-        <Link to="/dashboard" className="btn-primary cta-button">
+        <Link to="/login" className="btn-primary cta-button">
           <span>Match X</span>
           <ArrowRight size={22} />
         </Link>
