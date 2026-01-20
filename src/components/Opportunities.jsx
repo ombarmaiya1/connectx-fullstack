@@ -6,7 +6,7 @@ import {
     ThumbsUp, Trophy, Plus, MapPin,
     Share2
 } from 'lucide-react';
-import { communityDiscussions, topContributors, hubStats, communityEvents } from '../data/mockData';
+// import { communityDiscussions, topContributors, hubStats, communityEvents } from '../data/mockData';
 
 export const Opportunities = () => {
     const [activeTab, setActiveTab] = useState('Discussions');
