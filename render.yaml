@@ -8,7 +8,7 @@ services:
     name: connectx-backend
     runtime: python
     buildCommand: bash build.sh
-    startCommand: python manage.py migrate && daphne -b 0.0.0.0 -p $PORT connectx_backend.asgi:application
+    startCommand: python manage.py migrate accounts && python manage.py migrate && daphne -b 0.0.0.0 -p $PORT connectx_backend.asgi:application
     envVars:
       - key: DATABASE_URL
         fromDatabase:
