@@ -35,6 +35,34 @@ export const AuthProvider = ({ children }) => {
         checkAuth();
     }, []);
 
+    const getErrorMessage = (error) => {
+        if (!error.response) return 'Network error or server not reachable';
+
+        const data = error.response.data;
+        if (!data) return error.message || 'An unexpected error occurred';
+
+        // Handle Django DRF field errors (e.g. { "email": ["Invalid email"] })
+        if (typeof data === 'object' && !Array.isArray(data)) {
+            // Check for explicit "message" or "detail" keys first
+            if (data.message) return data.message;
+            if (data.detail) return data.detail;
+
+            // Otherwise, join all field errors
+            const messages = Object.entries(data).map(([key, value]) => {
+                const text = Array.isArray(value) ? value.join(' ') : String(value);
+                // capitalize key
+                const field = key.charAt(0).toUpperCase() + key.slice(1);
+                return `${field}: ${text}`;
+            });
+
+            if (messages.length > 0) return messages.join('\n');
+        }
+
+        if (typeof data === 'string') return data;
+
+        return 'An error occurred';
+    };
+
     const signup = async (userData) => {
         try {
             setError(null);
@@ -44,7 +72,7 @@ export const AuthProvider = ({ children }) => {
             setUser(user);
             return { success: true };
         } catch (err) {
-            const errorMessage = err.response?.data?.message || 'Signup failed';
+            const errorMessage = getErrorMessage(err);
             setError(errorMessage);
             return { success: false, error: errorMessage };
         }
@@ -59,7 +87,7 @@ export const AuthProvider = ({ children }) => {
             setUser(user);
             return { success: true };
         } catch (err) {
-            const errorMessage = err.response?.data?.message || 'Login failed';
+            const errorMessage = getErrorMessage(err);
             setError(errorMessage);
             return { success: false, error: errorMessage };
         }

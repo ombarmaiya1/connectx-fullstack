@@ -37,7 +37,8 @@ export const Signup = () => {
         const result = await signup({
             name: formData.fullName,
             email: formData.email,
-            password: formData.password
+            password: formData.password,
+            password2: formData.confirmPassword
         });
 
         setLoading(false);
