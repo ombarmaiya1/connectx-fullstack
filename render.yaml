@@ -23,7 +23,7 @@ services:
           type: redis
           name: connectx-redis
           property: connectionString
-    rootDirectory: backend
+    rootDir: backend
 
   - type: redis
     name: connectx-redis
