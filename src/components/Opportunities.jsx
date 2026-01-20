@@ -17,6 +17,30 @@ export const Opportunities = () => {
     const [contributors, setContributors] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
 
+    // Modal State
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [newDiscussion, setNewDiscussion] = useState({ title: '', description: '', tags: '' });
+    const [submitting, setSubmitting] = useState(false);
+
+    const handleCreateDiscussion = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        try {
+            const payload = {
+                ...newDiscussion,
+                tags: newDiscussion.tags.split(',').map(t => t.trim())
+            };
+            await communityAPI.createDiscussion(payload);
+            setShowCreateModal(false);
+            setNewDiscussion({ title: '', description: '', tags: '' });
+            window.location.reload();
+        } catch (error) {
+            alert('Failed to create discussion');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -281,7 +305,7 @@ export const Opportunities = () => {
                     <div className="create-panel glass-card">
                         <h3 className="panel-title">Create New</h3>
                         <div className="create-actions">
-                            <button className="create-btn primary">
+                            <button className="create-btn primary" onClick={() => setShowCreateModal(true)}>
                                 <Plus size={20} />
                                 Start Discussion
                             </button>
@@ -293,6 +317,75 @@ export const Opportunities = () => {
                     </div>
                 </div>
             </div>
+            {/* Create Discussion Modal */}
+            {showCreateModal && (
+                <div style={{
+                    position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                    backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    zIndex: 1000, backdropFilter: 'blur(5px)'
+                }}>
+                    <div className="glass-card" style={{ width: '500px', padding: '30px', position: 'relative' }}>
+                        <button
+                            onClick={() => setShowCreateModal(false)}
+                            style={{ position: 'absolute', top: '15px', right: '15px', background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '20px' }}
+                        >✕</button>
+                        <h2 style={{ marginBottom: '20px', fontSize: '24px', fontWeight: 'bold' }}>Start a Discussion</h2>
+                        <form onSubmit={handleCreateDiscussion}>
+                            <div style={{ marginBottom: '15px' }}>
+                                <label style={{ display: 'block', marginBottom: '8px', color: '#94a3b8' }}>Title</label>
+                                <input
+                                    type="text"
+                                    required
+                                    className="hub-search-input"
+                                    style={{ width: '100%' }}
+                                    value={newDiscussion.title}
+                                    onChange={e => setNewDiscussion({ ...newDiscussion, title: e.target.value })}
+                                    placeholder="What's on your mind?"
+                                />
+                            </div>
+                            <div style={{ marginBottom: '15px' }}>
+                                <label style={{ display: 'block', marginBottom: '8px', color: '#94a3b8' }}>Description</label>
+                                <textarea
+                                    required
+                                    className="hub-search-input"
+                                    style={{ width: '100%', minHeight: '100px', resize: 'vertical' }}
+                                    value={newDiscussion.description}
+                                    onChange={e => setNewDiscussion({ ...newDiscussion, description: e.target.value })}
+                                    placeholder="Share details..."
+                                />
+                            </div>
+                            <div style={{ marginBottom: '20px' }}>
+                                <label style={{ display: 'block', marginBottom: '8px', color: '#94a3b8' }}>Tags (comma separated)</label>
+                                <input
+                                    type="text"
+                                    className="hub-search-input"
+                                    style={{ width: '100%' }}
+                                    value={newDiscussion.tags}
+                                    onChange={e => setNewDiscussion({ ...newDiscussion, tags: e.target.value })}
+                                    placeholder="React, AI, Career..."
+                                />
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowCreateModal(false)}
+                                    className="view-btn"
+                                    style={{ background: 'transparent', border: '1px solid #334155' }}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="create-btn primary"
+                                    disabled={submitting}
+                                >
+                                    {submitting ? 'Posting...' : 'Post Discussion'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
