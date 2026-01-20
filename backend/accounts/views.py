@@ -27,3 +27,16 @@ def register(request):
 def me(request):
     serializer = UserSerializer(request.user)
     return Response(serializer.data)
+
+
+# Custom JWT View to use email-based authentication
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import EmailTokenObtainPairSerializer
+
+class EmailTokenObtainPairView(TokenObtainPairView):
+    """
+    Custom JWT token view that accepts email instead of username.
+    This fixes the 401 error on /api/auth/login by allowing users
+    to authenticate with their email address.
+    """
+    serializer_class = EmailTokenObtainPairSerializer

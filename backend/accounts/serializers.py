@@ -46,3 +46,10 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'email', 'date_joined')
         read_only_fields = ('id', 'date_joined')
+
+
+# Custom JWT Serializer to accept email instead of username
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
+    username_field = 'email'
