@@ -154,12 +154,7 @@ SIMPLE_JWT = {
 }
 
 # CORS Settings
-CORS_ALLOWED_ORIGINS = config(
-    'CORS_ALLOWED_ORIGINS',
-    default='https://connectx-landing-alpha.vercel.app,http://localhost:3000',
-    cast=Csv()
-)
-
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_METHODS = [
