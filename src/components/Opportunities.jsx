@@ -35,7 +35,9 @@ export const Opportunities = () => {
             setNewDiscussion({ title: '', description: '', tags: '' });
             window.location.reload();
         } catch (error) {
-            alert('Failed to create discussion');
+            console.error(error);
+            const errMsg = error.response?.data?.message || JSON.stringify(error.response?.data) || error.message;
+            alert(`Failed: ${errMsg}`);
         } finally {
             setSubmitting(false);
         }
@@ -86,6 +88,11 @@ export const Opportunities = () => {
 
             } catch (error) {
                 console.error("Failed to fetch community data:", error);
+                const errMsg = error.response ? JSON.stringify(error.response.data) : error.message;
+                // Only alert if it's not a 404 (which might happen if endpoints are missing)
+                if (error.response?.status === 500) {
+                    alert(`Backend Error (500): ${errMsg} - Check if migrations ran.`);
+                }
             } finally {
                 setLoading(false);
             }
