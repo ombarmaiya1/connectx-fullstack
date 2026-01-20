@@ -36,6 +36,14 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const getErrorMessage = (error) => {
+        // Log the full error to console for debugging
+        if (error.response) {
+            console.error('Auth Error Status:', error.response.status);
+            console.error('Auth Error Data:', error.response.data);
+        } else {
+            console.error('Auth Error:', error.message);
+        }
+
         if (!error.response) return 'Network error or server not reachable';
 
         const data = error.response.data;
