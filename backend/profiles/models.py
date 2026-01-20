@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.contrib.postgres.fields import ArrayField
 
 User = get_user_model()
 
@@ -24,9 +23,12 @@ class Profile(models.Model):
     state = models.CharField(max_length=100, blank=True)
     
     # Skills & Links
-    skills = ArrayField(models.CharField(max_length=100), blank=True, default=list)
+    skills = models.TextField(blank=True)  # Store as JSON string
     linkedin_url = models.URLField(blank=True)
     github_url = models.URLField(blank=True)
+    
+    # Online Status (for network discovery)
+    is_online = models.BooleanField(default=False)
     
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
@@ -46,3 +48,8 @@ class Profile(models.Model):
     def name(self):
         """Alias for full_name to match frontend expectations"""
         return self.full_name
+    
+    @property
+    def title(self):
+        """Returns headline as title for frontend compatibility"""
+        return self.headline if self.headline else ""

@@ -158,3 +158,54 @@ def get_connection_requests(request):
         'sent': ConnectionRequestSerializer(sent_requests, many=True).data,
         'connections': ConnectionRequestSerializer(accepted_connections, many=True).data,
     })
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_connection_status(request, user_id):
+    """
+    GET /api/connections/status/<user_id>
+    Returns connection status between logged-in user and target user
+    """
+    # Check if trying to get status with self
+    if user_id == request.user.id:
+        return Response({
+            'status': 'not_connected',
+            'requestId': None,
+            'message': 'Cannot connect with yourself'
+        })
+    
+    # Check if target user exists
+    try:
+        target_user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return Response(
+            {'error': 'User not found'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    
+    # Check for existing connection request
+    connection = ConnectionRequest.objects.filter(
+        Q(sender=request.user, receiver=target_user) |
+        Q(sender=target_user, receiver=request.user)
+    ).first()
+    
+    if not connection:
+        return Response({
+            'status': 'not_connected',
+            'requestId': None
+        })
+    
+    # Map backend status to frontend status
+    status_map = {
+        'pending': 'pending',
+        'accepted': 'connected',
+        'rejected': 'not_connected',
+    }
+    
+    return Response({
+        'status': status_map.get(connection.status, 'not_connected'),
+        'requestId': connection.id,
+        'isSender': connection.sender.id == request.user.id
+    })
+

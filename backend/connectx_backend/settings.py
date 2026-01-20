@@ -24,7 +24,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.postgres',
     
     # Third party
     'rest_framework',
@@ -77,18 +76,15 @@ ASGI_APPLICATION = 'connectx_backend.asgi.application'
 # Database
 import dj_database_url
 
+# Use SQLite for local development (no PostgreSQL required)
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='connectx_db'),
-        'USER': config('DB_USER', default='postgres'),
-        'PASSWORD': config('DB_PASSWORD', default=''),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
-# Render Database Override
+# Render Database Override (for production)
 if config('DATABASE_URL', default=None):
     DATABASES['default'] = dj_database_url.config(default=config('DATABASE_URL'), conn_max_age=600, ssl_require=True)
 
