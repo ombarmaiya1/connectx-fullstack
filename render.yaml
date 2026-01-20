@@ -7,7 +7,7 @@ services:
   - type: web
     name: connectx-backend
     runtime: python
-    buildCommand: ./build.sh
+    buildCommand: bash build.sh
     startCommand: daphne -b 0.0.0.0 -p $PORT connectx_backend.asgi:application
     envVars:
       - key: DATABASE_URL
