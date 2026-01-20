@@ -6,7 +6,7 @@ import {
     ThumbsUp, Trophy, Plus, MapPin,
     Share2
 } from 'lucide-react';
-// import { communityDiscussions, topContributors, hubStats, communityEvents } from '../data/mockData';
+import { communityDiscussions, topContributors, hubStats, communityEvents } from '../data/mockData';
 
 export const Opportunities = () => {
     const [activeTab, setActiveTab] = useState('Discussions');
@@ -36,8 +36,25 @@ export const Opportunities = () => {
             window.location.reload();
         } catch (error) {
             console.error(error);
-            const errMsg = error.response?.data?.message || JSON.stringify(error.response?.data) || error.message;
-            alert(`Failed: ${errMsg}`);
+            // FALLBACK TO LOCAL STATE FOR DEMO
+            const demoDiscussion = {
+                id: Date.now(),
+                title: newDiscussion.title,
+                description: newDiscussion.description,
+                tags: newDiscussion.tags.split(',').map(t => t.trim()),
+                author_name: 'You',
+                college: 'Your College',
+                time: 'Just now',
+                match: 95,
+                replies: 0,
+                likes: 0,
+                avatar: `https://ui-avatars.com/api/?name=You&background=random`,
+                is_trending: false
+            };
+            setDiscussions([demoDiscussion, ...discussions]);
+            setShowCreateModal(false);
+            setNewDiscussion({ title: '', description: '', tags: '' });
+            alert('Posted! (Demo Mode: Backend unreachable)');
         } finally {
             setSubmitting(false);
         }
@@ -88,11 +105,14 @@ export const Opportunities = () => {
 
             } catch (error) {
                 console.error("Failed to fetch community data:", error);
-                const errMsg = error.response ? JSON.stringify(error.response.data) : error.message;
-                // Only alert if it's not a 404 (which might happen if endpoints are missing)
-                if (error.response?.status === 500) {
-                    alert(`Backend Error (500): ${errMsg} - Check if migrations ran.`);
-                }
+
+                // FALLBACK TO MOCK DATA ON ERROR
+                console.warn("Using Mock Data due to API Error");
+                setStats(hubStats);
+                setDiscussions(communityDiscussions);
+                setEvents(communityEvents);
+                setContributors(topContributors);
+
             } finally {
                 setLoading(false);
             }
