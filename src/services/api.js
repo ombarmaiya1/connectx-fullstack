@@ -74,4 +74,14 @@ export const messageAPI = {
     sendMessage: (recipient, content) => api.post('/messages/', { recipient, content })
 };
 
+// Community API
+export const communityAPI = {
+    getSummary: () => api.get('/community/summary'),
+    getDiscussions: (params) => api.get('/community/discussions/', { params }),
+    createDiscussion: (data) => api.post('/community/discussions/', data),
+    getEvents: () => api.get('/community/events/'),
+    createEvent: (data) => api.post('/community/events/', data),
+    getTopContributors: () => api.get('/community/top-contributors')
+};
+
 export default api;
