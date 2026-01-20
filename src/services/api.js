@@ -1,9 +1,7 @@
 import axios from 'axios';
 
 // Use current origin if not on localhost, otherwise assume local backend
-const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:5000/api'
-    : '/api';
+const API_URL = (process.env.REACT_APP_API_URL || 'http://localhost:8000') + '/api';
 
 // Create axios instance
 const api = axios.create({
