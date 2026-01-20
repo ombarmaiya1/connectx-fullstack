@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import {
     Search, Filter, Users, MessageSquare,
     Calendar, Layout, TrendingUp, MessageCircle,
-    ThumbsUp, Trophy, Plus, Heart, MapPin,
-    Share2, Image as ImageIcon, Video, Send
+    ThumbsUp, Trophy, Plus, MapPin,
+    Share2
 } from 'lucide-react';
 import { communityDiscussions, topContributors, hubStats, communityEvents } from '../data/mockData';
 

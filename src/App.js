@@ -10,7 +10,7 @@ import { DashboardLayout } from "./components/DashboardLayout";
 import { Feed } from "./components/Feed";
 import { Network } from "./components/Network";
 import { Profile } from "./components/Profile";
-import { Messages } from "./components/Messages";
+
 import { ChatScreen } from "./components/ChatScreen";
 import { Opportunities } from "./components/Opportunities";
 import { CustomCursor } from "./components/CustomCursor";

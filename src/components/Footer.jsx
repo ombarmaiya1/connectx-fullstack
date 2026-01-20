@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import { Github, Linkedin, Twitter, Instagram } from 'lucide-react';
 
@@ -8,8 +9,8 @@ export const Footer = () => {
         <div className="footer-brand">
           <div className="footer-logo">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <circle cx="16" cy="16" r="14" stroke="var(--brand-primary)" strokeWidth="2"/>
-              <path d="M12 16L14.5 18.5L20 13" stroke="var(--brand-primary)" strokeWidth="2" strokeLinecap="round"/>
+              <circle cx="16" cy="16" r="14" stroke="var(--brand-primary)" strokeWidth="2" />
+              <path d="M12 16L14.5 18.5L20 13" stroke="var(--brand-primary)" strokeWidth="2" strokeLinecap="round" />
             </svg>
             <span className="footer-logo-text">Connect X</span>
           </div>
@@ -17,7 +18,7 @@ export const Footer = () => {
             Building the future of professional networking
           </p>
         </div>
-        
+
         <div className="footer-links">
           <div className="footer-column">
             <h4 className="footer-column-title">Product</h4>
@@ -26,7 +27,7 @@ export const Footer = () => {
             <a href="#" className="footer-link">Pricing</a>
             <a href="#" className="footer-link">Mobile App</a>
           </div>
-          
+
           <div className="footer-column">
             <h4 className="footer-column-title">Company</h4>
             <a href="#" className="footer-link">About Us</a>
@@ -34,7 +35,7 @@ export const Footer = () => {
             <a href="#" className="footer-link">Blog</a>
             <a href="#" className="footer-link">Contact</a>
           </div>
-          
+
           <div className="footer-column">
             <h4 className="footer-column-title">Legal</h4>
             <a href="#" className="footer-link">Privacy Policy</a>
@@ -43,7 +44,7 @@ export const Footer = () => {
             <a href="#" className="footer-link">GDPR</a>
           </div>
         </div>
-        
+
         <div className="footer-social">
           <h4 className="footer-column-title">Follow Us</h4>
           <div className="social-icons">
@@ -62,7 +63,7 @@ export const Footer = () => {
           </div>
         </div>
       </div>
-      
+
       <div className="footer-bottom">
         <p>© 2025 Connect X. All rights reserved.</p>
       </div>

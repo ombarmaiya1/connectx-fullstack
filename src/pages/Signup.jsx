@@ -190,7 +190,14 @@ export const Signup = () => {
 
                             <label className="checkbox-label terms-label">
                                 <input type="checkbox" required />
-                                <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
+                                <span>
+                                    I agree to the{' '}
+                                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                                    <a href="#">Terms of Service</a>
+                                    {' and '}
+                                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                                    <a href="#">Privacy Policy</a>
+                                </span>
                             </label>
 
                             <button type="submit" className="btn-primary auth-submit" disabled={loading}>

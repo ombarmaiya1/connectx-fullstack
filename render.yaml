@@ -1,0 +1,32 @@
+databases:
+  - name: connectx_db
+    databaseName: connectx_db
+    user: connectx_user
+
+services:
+  - type: web
+    name: connectx-backend
+    runtime: python
+    buildCommand: ./build.sh
+    startCommand: daphne -b 0.0.0.0 -p $PORT connectx_backend.asgi:application
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: connectx_db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "false"
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: connectx-redis
+          property: connectionString
+    rootDirectory: backend
+
+  - type: redis
+    name: connectx-redis
+    region: oregon # optional, defaults to service region
+    plan: free # optional
+    ipAllowList: []
