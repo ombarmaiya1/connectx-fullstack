@@ -75,10 +75,17 @@ export const AuthProvider = ({ children }) => {
         try {
             setError(null);
             const response = await authAPI.signup(userData);
-            const { token, ...user } = response.data;
-            localStorage.setItem('token', token);
-            setUser(user);
-            return { success: true };
+            // Backend returns: { user, access, refresh }
+            const { access, user } = response.data;
+
+            if (access) {
+                localStorage.setItem('token', access);
+                // Standardize user object if needed, or just set it
+                setUser(user);
+                return { success: true };
+            } else {
+                throw new Error('No access token received');
+            }
         } catch (err) {
             const errorMessage = getErrorMessage(err);
             setError(errorMessage);
@@ -90,10 +97,25 @@ export const AuthProvider = ({ children }) => {
         try {
             setError(null);
             const response = await authAPI.login(credentials);
-            const { token, ...user } = response.data;
-            localStorage.setItem('token', token);
-            setUser(user);
-            return { success: true };
+            // Default SimpleJWT returns: { access, refresh }
+            const { access } = response.data;
+
+            if (access) {
+                localStorage.setItem('token', access);
+                // Fetch user data since login doesn't return it
+                try {
+                    const userResponse = await authAPI.getMe();
+                    setUser(userResponse.data);
+                } catch (userErr) {
+                    console.error('Failed to fetch user details after login', userErr);
+                    // Fallback/Non-blocking error? Or fail login?
+                    // Usually better to fail or try to continue. 
+                    // We'll try to continue but user state might be empty.
+                }
+                return { success: true };
+            } else {
+                throw new Error('No access token received');
+            }
         } catch (err) {
             const errorMessage = getErrorMessage(err);
             setError(errorMessage);
