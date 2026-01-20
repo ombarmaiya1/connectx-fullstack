@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('accounts.urls')),
     path('api/profile/', include('profiles.urls')),
+    path('api/users/profile/', include('profiles.urls')),  # Frontend calls this path
     path('api/match/', include('matching.urls')),
     path('api/connect/', include('connections.urls')),
     path('api/chat/', include('chat.urls')),

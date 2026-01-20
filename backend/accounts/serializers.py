@@ -42,10 +42,107 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """
+    User serializer that includes full profile data
+    Used by /api/auth/me to populate AuthContext
+    """
+    # Profile fields (read from related profile)
+    name = serializers.SerializerMethodField()
+    headline = serializers.SerializerMethodField()
+    bio = serializers.SerializerMethodField()
+    avatar = serializers.SerializerMethodField()
+    location = serializers.SerializerMethodField()
+    college = serializers.SerializerMethodField()
+    skills = serializers.SerializerMethodField()
+    
+    # Connection counts
+    connections = serializers.SerializerMethodField()
+    followers = serializers.SerializerMethodField()
+    following = serializers.SerializerMethodField()
+
+    
+    # Rename date_joined to createdAt for frontend
+    createdAt = serializers.DateTimeField(source='date_joined', read_only=True)
+    
     class Meta:
         model = User
-        fields = ('id', 'email', 'date_joined')
-        read_only_fields = ('id', 'date_joined')
+        fields = [
+            'id', 
+            'email', 
+            'name',
+            'headline',
+            'bio',
+            'avatar',
+            'location',
+            'college',
+            'skills',
+            'connections',
+            'followers',
+            'following',
+            'createdAt'
+        ]
+        read_only_fields = ['id', 'email', 'createdAt']
+    
+    def _get_profile(self, obj):
+        """Helper to get or create profile"""
+        from profiles.models import Profile
+        profile, _ = Profile.objects.get_or_create(user=obj)
+        return profile
+    
+    def get_name(self, obj):
+        profile = self._get_profile(obj)
+        return profile.name
+    
+    def get_headline(self, obj):
+        profile = self._get_profile(obj)
+        return profile.headline
+    
+    def get_bio(self, obj):
+        profile = self._get_profile(obj)
+        return profile.bio
+    
+    def get_avatar(self, obj):
+        profile = self._get_profile(obj)
+        return profile.avatar
+    
+    def get_location(self, obj):
+        profile = self._get_profile(obj)
+        return profile.location
+    
+    def get_college(self, obj):
+        profile = self._get_profile(obj)
+        return profile.college
+    
+    def get_skills(self, obj):
+        profile = self._get_profile(obj)
+        return profile.skills
+    
+    def get_connections(self, obj):
+        """Returns array of connection user IDs"""
+        from connections.models import ConnectionRequest
+        sent = ConnectionRequest.objects.filter(
+            sender=obj, status='accepted'
+        ).values_list('receiver_id', flat=True)
+        received = ConnectionRequest.objects.filter(
+            receiver=obj, status='accepted'
+        ).values_list('sender_id', flat=True)
+        return list(set(list(sent) + list(received)))
+    
+    def get_followers(self, obj):
+        """Returns array of follower user IDs"""
+        from connections.models import ConnectionRequest
+        followers = ConnectionRequest.objects.filter(
+            receiver=obj, status='accepted'
+        ).values_list('sender_id', flat=True)
+        return list(followers)
+    
+    def get_following(self, obj):
+        """Returns array of following user IDs"""
+        from connections.models import ConnectionRequest
+        following = ConnectionRequest.objects.filter(
+            sender=obj, status='accepted'
+        ).values_list('receiver_id', flat=True)
+        return list(following)
 
 
 # Custom JWT Serializer to accept email instead of username
